@@ -1,0 +1,15 @@
+#!/bin/sh
+make libname
+LIBNAME=`./libname`
+make reallyclean
+cd ..
+DIR=`pwd`
+DIRNAME=`basename $DIR`
+cd ..
+if [ $LIBNAME != $DIRNAME ]
+then
+  echo "Copying $DIRNAME to $LIBNAME"
+  cp -r $DIRNAME $LIBNAME
+fi
+echo "Creating `pwd`/$LIBNAME.tgz"
+tar zcf $LIBNAME.tgz $LIBNAME

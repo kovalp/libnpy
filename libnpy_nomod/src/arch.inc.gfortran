@@ -1,0 +1,12 @@
+CFLAGS = -Wall -I../include -L../lib
+CC = gcc
+FC = gfortran
+FFLAGS = -Wall -I../include -L../lib
+#FFLAGS = -g -O0 -fbounds-check -fbacktrace -Wall -I../include -L../lib
+LIBNPY = -lnpy
+AR = ar 
+RM = rm
+CP = cp
+VERSION = 0.6
+PREFIX = /usr/local
+INSTALL = install
