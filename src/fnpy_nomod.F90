@@ -31,7 +31,7 @@ end subroutine ! make_c_string
 !
 !
 !
-subroutine save_single(fname, ndims, sh, a)
+subroutine snpys(fname, ndims, sh, a)
   use iso_c_binding, only : C_FLOAT, C_INT
   implicit none
   interface
@@ -49,7 +49,7 @@ subroutine save_single(fname, ndims, sh, a)
   end interface
       
   character(len=*), intent(in) :: fname
-  integer(kind=C_INT),   intent(in) :: ndims, sh(*)
+  integer(C_INT),   intent(in) :: ndims, sh(*)
   real(C_FLOAT),    intent(in) :: a(*)
   ! internal
   character(2000) :: buf
@@ -57,12 +57,12 @@ subroutine save_single(fname, ndims, sh, a)
   call c_npy_save_float(buf, 1_C_INT, ndims, sh, a) 
   !write(6,*) 'save_single: exit.'
 
-end subroutine !save_single
+end subroutine !snpys
 
 !
 !
 !
-subroutine save_double(fname, nd, shape, a)
+subroutine dnpys(fname, nd, shape, a)
   use iso_c_binding, only : C_INT, C_DOUBLE, C_NULL_CHAR
   implicit none
   character(len=*), intent(in) :: fname
@@ -85,12 +85,12 @@ subroutine save_double(fname, nd, shape, a)
 
   call c_npy_save_double(buf, 1_C_INT, nd, shape, a)
 
-end subroutine save_double
+end subroutine !dnpys
 
 !
 !
 !
-subroutine save_integer(fname, nd, shape, a)
+subroutine inpys(fname, nd, shape, a)
   use iso_c_binding, only : C_INT, C_NULL_CHAR
 
   implicit none
@@ -113,13 +113,13 @@ subroutine save_integer(fname, nd, shape, a)
   call make_c_string(fname, buf)
 
   call c_npy_save_int(buf, 1_C_INT, nd, shape, a) 
-end subroutine save_integer
+end subroutine ! inpys
 
 
 !
 !
 !
-subroutine save_complex_single(fname, nd, shape, a)
+subroutine cnpys(fname, nd, shape, a)
   use iso_c_binding, only : C_INT, C_FLOAT, C_NULL_CHAR
 
   implicit none
@@ -143,13 +143,13 @@ subroutine save_complex_single(fname, nd, shape, a)
 
   call c_npy_save_float_complex(buf, 1_C_INT, nd, shape, a) 
 
-end subroutine !save_complex_single
+end subroutine !cnpys
 
 
 !
 !
 !
-subroutine save_complex_double(fname, nd, shape, a)
+subroutine znpys(fname, nd, shape, a)
   use iso_c_binding, only : C_INT, C_DOUBLE, C_NULL_CHAR
 
   implicit none
@@ -173,5 +173,5 @@ subroutine save_complex_double(fname, nd, shape, a)
 
   call c_npy_save_double_complex(buf, 1_C_INT, nd, shape, a) 
 
-end subroutine !save_complex_double
+end subroutine !znpys
 

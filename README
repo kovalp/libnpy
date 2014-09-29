@@ -1,59 +1,131 @@
-                   libnpy
+   Library libnpy
+
+  CONTENTS
+  1. INTRODUCTION
+  2. INSTALLATION
+  3. USAGE
+  4. INSTRINSICS
+
+1. INTRODUCTION
 
 This is a small library for writing an array to a .npy file, so that it
-can easily be loaded into a numpy application.  For a description of
-the file format, do
+can easily be loaded into a numpy application. The library can be called 
+from a C/C++ application. Moreover, Fortran wrappers are available. 
 
->> from numpy.lib import format
->> help(format)
+2. INSTALLATION
 
-The od (octal dump) command provides a simple way to look at the contents
-of a .npy file, and especially to check the metadata:
+  2.1. Short instructions
+    cp archs/arch.inc.gcc arch.inc
+    $(EDITOR) arch.inc
+    make
+    make check
+    make install
+  
+  2.2. Explanatory remarks
 
-$ od -c file.npy
+      There is a Makefile-based build system, which can be customized for your
+    particular set of C/C++/Fortran/Python compilers by means of an architechture
+    file "arch.inc". The architecture file must be created in the librarie's root
+    directory (together with this README file). Examples of arch.inc files
+    are avaible in the directory "archs/". One can copy one of these examples
+    and adjust for your particular machine/compiler set.
+      During adjustment you should set the c/c++ compiler, optionally fortran compiler,
+    optionally for testing purposes python2 and python3 interpreters, a PREFIX for 
+    installation directories. Moreover, an INSTALLATION_FLAVOR should be chosen.
+    INSTALLATION_FLAVOR can be chosen out of three possibilities
+      i) c_only_bindings -- i.e. library will be usable only from C/C++ programs.
+      ii) fortran_mod    -- the fortran wrappers will be added to the library in form of a fortran module.
+      iii) fortran_nomod -- the fortran wrappers will be added to the library without utilizing fortran modules.
+      For additional discussion of these possibilities refer to section 4. INTRINSICS.
+
+      By invoking make command one starts the compilation process of all three flavors 
+    of the library. The command make check will additionally create test executables
+    which are capable of creating a set of .npy files. These .npy files will be read
+    by python scripts and compared to the reference data.
+      The command "make install" copies the npy.h in the directory $(PREFIX)/include/,
+    as well as libnpy.a into the the $(PREFIX)/lib/ directory. If INSTALLATION_FLAVOR==fortran_mod,
+    then a .mod-file "fnpy.mod" will be put into $(PREFIX)/include/ directory.
+ 
+3. USAGE
+
+  The usage of the library is best illustrated by examples.
+  Example of C program which creates .npy files can be found in test/test_npy.c
+  Example of a Fortran program can be found under test/test_fnpy_mod.F90. 
+  This program USEs the module fnpy which provides a description of interfaces.
+  Finally, an example of a Fortran program that would not USE any module file
+  is available under test/test_fnpy_nomod.F90
+
+  Reading of .npy files occurs only from a python script. Examples of such 
+  scripts are available under src/*.py
 
 
-To build the archive libnpy.a and run a couple of simple test programs, go to
-the src/ subdirectory and do
+4. INTRINSICS
 
-make
-make check
+  4.1. Format of .npy files 
+ 
+    For a description of the NUMPY file format, do
+    >> from numpy.lib import format
+    >> help(format)
 
-The library provides the C functions
+       The od (octal dump) command provides a simple way to look at the contents
+     of a .npy file, and especially to check the metadata:
 
-npy_save
-npy_save_double
-npy_save_float
-npy_save_int
-npy_save_float_complex
-npy_save_double_complex
+    >> od -c file.npy
 
-If you require Fortran bindings, do
 
-make fortran
-make check_fortran
+  4.2. Provided functions / subrotines 
 
-The Fortran module fnpy contains the subroutines
+    The library provides the C functions
 
-save_single
-save_double
-save_integer
-save_complex_single
-save_complex_double
+    npy_save
+    npy_save_double
+    npy_save_float
+    npy_save_int
+    npy_save_float_complex
+    npy_save_double_complex
 
-The C function npy_save can write any type of array; the others are
-convenience routines that call npy_save.
+      If you require Fortran bindings with a module interface, then you 
+    should choose INSTALL_FLAVOR=fortran_mod. The Fortran module fnpy 
+    (fnpy.mod) will define the subroutines
 
-I have tested this code using gcc/gfortran 4.4.4 and numpy 1.3.0
-on Fedora 13 (x86_64).
+    save_single
+    save_double
+    save_integer
+    save_complex_single
+    save_complex_double
 
-The MIT License applies to this software; see the LICENSE file in this
-directory.
+      If you require Fortran bindings without the module interface, then you 
+    should choose INSTALL_FLAVOR=fortran_nomod. The library "libnpy.a"
+    will contain subroutines named similarly to the BLAS/LAPACK library: 
 
-Bill McLean 
-School of Maths and Stats
-University of NSW
+    inpys  -- Integer array .NPY Save
+    snpys  -- Single precision real arrays .NPY Save
+    dnpys  -- Double precision real arrays .NPY Save
+    cnpys  -- Single precision complex arrays .NPY Save
+    znpys  -- Double precision complex arrays .NPY Save
 
+      In all cases, the C function npy_save can write any type of array; the
+    others are convenience routines that call npy_save.
+
+    4.3. Discussion of pro- and contra- of the INSTALL_FLAVOR options
+
+      We have chosen to provide three installation flavors because of
+    portability reasons. 
+
+      Namely, if you choose the INSTALL_FLAVOR=c_only_bindings option, then
+    your compilation will be not hampered by a (eventually) missing Fortran
+    compiler, but you would not profit from the Fortran wrappers provided by
+    other two options (fortran_mod or fortran_nomod) if calling from a Fortran source.
+
+      The choice INSTALL_FLAVOR=fortran_mod will cause an addition of the Fortran
+    wrapper subroutines into the library "libnpy.a". Moreover, this option will
+    additionally install a module file "fnpy.mod" to the $(PREFIX)/include/ subdirectory.
+    This file is a binary, compiler-specific file that provides an exhaustive information
+    on the argument's types of the Fortran wrapper subroutines  "save_*".
+
+      The choice INSTALL_FLAVOR=fortran_nomod will cause addition of yet other Fortran
+    wrapper subroutines (*npys) into the library "libnpy.a". However, option would not 
+    install any additional header-like file. 
 
 CHANGELOG
 
@@ -76,3 +148,5 @@ string LIBNPY_VERSION giving the library version.
 is not executed when the file is imported as a module.  This change was
 in response to an email from Mark Rosin, who observed that
 'make check_fortran' fails if you do not first run 'make check'.
+
+

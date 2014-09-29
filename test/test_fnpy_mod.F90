@@ -1,4 +1,4 @@
-program test_fnpy
+program test_fnpy_mod
 
     use fnpy
     implicit none
@@ -21,4 +21,4 @@ program test_fnpy
     call save_complex_single("fe.npy", shape(e), e)
     call save_complex_double("ff.npy", shape(f), f)
 
-end program test_fnpy
+end program test_fnpy_mod
