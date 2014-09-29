@@ -1,10 +1,23 @@
+======================
    Library libnpy
+======================
 
   CONTENTS
+
   1. INTRODUCTION
+
   2. INSTALLATION
+    2.1. Short instructions
+    2.2. Explanatory remarks
+
   3. USAGE
+
   4. INSTRINSICS
+    4.1. Format of .npy files
+    4.2. Provided functions / subroutines
+    4.3. Discussion of pro- and contra- of provided INSTALL_FLAVOR optios
+
+=======================
 
 1. INTRODUCTION
 
@@ -73,7 +86,7 @@ from a C/C++ application. Moreover, Fortran wrappers are available.
     >> od -c file.npy
 
 
-  4.2. Provided functions / subrotines 
+  4.2. Provided functions / subroutines 
 
     The library provides the C functions
 
@@ -107,7 +120,7 @@ from a C/C++ application. Moreover, Fortran wrappers are available.
       In all cases, the C function npy_save can write any type of array; the
     others are convenience routines that call npy_save.
 
-    4.3. Discussion of pro- and contra- of the INSTALL_FLAVOR options
+    4.3. Discussion of pro- and contra- of provided INSTALL_FLAVOR options
 
       We have chosen to provide three installation flavors because of
     portability reasons. 
@@ -121,11 +134,22 @@ from a C/C++ application. Moreover, Fortran wrappers are available.
     wrapper subroutines into the library "libnpy.a". Moreover, this option will
     additionally install a module file "fnpy.mod" to the $(PREFIX)/include/ subdirectory.
     This file is a binary, compiler-specific file that provides an exhaustive information
-    on the argument's types of the Fortran wrapper subroutines  "save_*".
+    on the argument's types of the Fortran wrapper subroutines  "save_*". This choice
+    results in an early detection of argument-passing errors, because these errors would
+    be detected by the compiler at the compilaion time. However, the .mod file should
+    be generally produced by the same compiler which will be used in your application,
+    which often makes unusable the library if one tries to use different Fortran compilers
+    for the library and application. 
 
       The choice INSTALL_FLAVOR=fortran_nomod will cause addition of yet other Fortran
-    wrapper subroutines (*npys) into the library "libnpy.a". However, option would not 
-    install any additional header-like file. 
+    wrapper subroutines (*npys) into the library "libnpy.a". However, this option would
+    not install any additional header-like file. This choice obvoiusly adds to the 
+    vulnerability of an application because the eventual argument-passing errors 
+    could not be detected at the compilation time. However, the _nomod wrappers do
+    not require the .mod file and do not contain any fortran-specific dependencies
+    to the "libnpy.a" (at least if compiled with gfortran without extra debug options).
+    This is a pre-requisite for a portable library, i.e. library that can be successfully
+    used with different Fortran compilers on the application side.
 
 CHANGELOG
 
