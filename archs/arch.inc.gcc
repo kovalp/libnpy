@@ -1,0 +1,25 @@
+CFLAGS = -Wall -I../include -L../lib
+CC = gcc
+FC = gfortran
+FFLAGS = -Wall -I../include -L../lib
+#FFLAGS = -g -O0 -fbounds-check -fbacktrace -Wall -I../include -L../lib
+
+PYTHON2 = python
+PYTHON3 =
+
+AR = ar 
+RM = rm
+CP = cp
+MV = mv
+
+VERSION = 0.6
+
+PREFIX = /usr/local
+INSTALL = install
+MKDIR-P = mkdir -p
+INSTALL_FLAVOR = fortran_nomod
+
+#INSTALL_FLAVOR = c_only_bindings
+#INSTALL_FLAVOR = fortran_mod
+#INSTALL_FLAVOR = fortran_nomod
+
