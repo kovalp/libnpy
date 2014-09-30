@@ -4,17 +4,37 @@
 #include <stdint.h>
 
 #ifdef __APPLE__
-#include <libkern/OSByteOrder.h>
-#else
-#include <endian.h>
-#endif
+//
+// APPLE
+//
 
-#ifdef __APPLE__
+#include <libkern/OSByteOrder.h>
 #ifndef htole16
 #define htole16(x)  OSSwapHostToLittleInt16((x))
 #endif
+
+#else
+//
+// i.e. not APPLE
+//
+
+#include <endian.h>
+#ifndef htole16
+#define IS_BIG_ENDIAN (!*(unsigned char *)&(uint16_t){1})
+
+uint16_t htole16(uint16_t x)
+{
+  //printf("IS_BIG_ENDIAN  %d", IS_BIG_ENDIAN);
+  if IS_BIG_ENDIAN {
+    return (x >> 8) | (x << 8); 
+    } 
+  else {
+    return x;
+    }
+}
 #endif
 
+#endif
 
 int create_metadata(char preamble[PREAMBLE_LEN], char header[MAX_HDR_LEN],
                     char * descr, int fortran_order,                     
