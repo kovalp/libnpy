@@ -15,7 +15,7 @@
   4. INSTRINSICS
     4.1. Format of .npy files
     4.2. Provided functions / subroutines
-    4.3. Discussion of pro- and contra- of provided INSTALL_FLAVOR optios
+    4.3. Discussion of pro- and contra- of provided INSTALL_FLAVOR options
 
 =======================
 
@@ -36,37 +36,44 @@ from a C/C++ application. Moreover, Fortran wrappers are available.
   
   2.2. Explanatory remarks
 
-      There is a Makefile-based build system, which can be customized for your
-    particular set of C/C++/Fortran/Python compilers by means of an architechture
-    file "arch.inc". The architecture file must be created in the librarie's root
-    directory (together with this README file). Examples of arch.inc files
-    are avaible in the directory "archs/". One can copy one of these examples
-    and adjust for your particular machine/compiler set.
-      During adjustment you should set the c/c++ compiler, optionally fortran compiler,
-    optionally for testing purposes python2 and python3 interpreters, a PREFIX for 
-    installation directories. Moreover, an INSTALLATION_FLAVOR should be chosen.
-    INSTALLATION_FLAVOR can be chosen out of three possibilities
-      i) c_only_bindings -- i.e. library will be usable only from C/C++ programs.
-      ii) fortran_mod    -- the fortran wrappers will be added to the library in form of a fortran module.
-      iii) fortran_nomod -- the fortran wrappers will be added to the library without utilizing fortran modules.
-      For additional discussion of these possibilities refer to section 4. INTRINSICS.
+      There is a Makefile-based build system, which can be customized for
+    your particular set of C/C++/Fortran/Python compilers by means of
+    an architechture file "arch.inc". The architecture file must be created
+    in the librarie's root directory (together with this README file).
+    Examples of "arch.inc" files are avaible in the directory "archs/".
+    One can copy one of these examples and adjust for your particular
+    machine/compiler set.
+      During adjustment you should set the c/c++ compiler, optionally fortran
+    compiler, optionally for testing purposes python2 and python3
+    interpreters, a PREFIX for installation directories. Moreover, an
+    INSTALLATION_FLAVOR should be chosen. INSTALLATION_FLAVOR can be chosen
+    out of three possibilities
+      i) c_only_bindings -- library will be usable only from C/C++ programs.
+      ii) fortran_mod    -- the fortran wrappers will be added to the library
+          in form of a fortran module.
+      iii) fortran_nomod -- the fortran wrappers will be added to the library
+          without utilizing fortran modules.
+      For additional discussion of these possibilities we refer to section
+      4. INTRINSICS (subsection 4.3).
 
-      By invoking make command one starts the compilation process of all three flavors 
-    of the library. The command make check will additionally create test executables
-    which are capable of creating a set of .npy files. These .npy files will be read
-    by python scripts and compared to the reference data.
-      The command "make install" copies the npy.h in the directory $(PREFIX)/include/,
-    as well as libnpy.a into the the $(PREFIX)/lib/ directory. If INSTALLATION_FLAVOR==fortran_mod,
+      By invoking "make" command one starts the compilation process of all
+    three flavors of the library. The command "make check" will additionally
+    create test executables which are capable of creating a set of .npy files.
+    These .npy files will be then read by python scripts and compared to the
+    reference data.
+      The command "make install" copies the "npy.h" header file to the
+    directory $(PREFIX)/include/, as well as "libnpy.a" library file to the
+    directory $(PREFIX)/lib/. If INSTALLATION_FLAVOR==fortran_mod,
     then a .mod-file "fnpy.mod" will be put into $(PREFIX)/include/ directory.
  
 3. USAGE
 
   The usage of the library is best illustrated by examples.
-  Example of C program which creates .npy files can be found in test/test_npy.c
-  Example of a Fortran program can be found under test/test_fnpy_mod.F90. 
-  This program USEs the module fnpy which provides a description of interfaces.
-  Finally, an example of a Fortran program that would not USE any module file
-  is available under test/test_fnpy_nomod.F90
+  Example of C program which creates .npy files can be found under
+  "test/test_npy.c". Example of a Fortran program can be found under
+  "test/test_fnpy_mod.F90". This program USEs the module fnpy which provides
+  a description of interfaces. Finally, an example of a Fortran program that
+  would not USE any module file is available under "test/test_fnpy_nomod.F90".
 
   Reading of .npy files occurs only from a python script. Examples of such 
   scripts are available under src/*.py
@@ -80,7 +87,7 @@ from a C/C++ application. Moreover, Fortran wrappers are available.
     >> from numpy.lib import format
     >> help(format)
 
-       The od (octal dump) command provides a simple way to look at the contents
+     The od (octal dump) command provides a simple way to look at the contents
      of a .npy file, and especially to check the metadata:
 
     >> od -c file.npy
@@ -120,6 +127,7 @@ from a C/C++ application. Moreover, Fortran wrappers are available.
       In all cases, the C function npy_save can write any type of array; the
     others are convenience routines that call npy_save.
 
+
     4.3. Discussion of pro- and contra- of provided INSTALL_FLAVOR options
 
       We have chosen to provide three installation flavors because of
@@ -127,50 +135,33 @@ from a C/C++ application. Moreover, Fortran wrappers are available.
 
       Namely, if you choose the INSTALL_FLAVOR=c_only_bindings option, then
     your compilation will be not hampered by a (eventually) missing Fortran
-    compiler, but you would not profit from the Fortran wrappers provided by
-    other two options (fortran_mod or fortran_nomod) if calling from a Fortran source.
+    compiler. However, if calling from a Fortran source, you would not profit
+    from the Fortran wrappers provided by other two options 
+    (fortran_mod or fortran_nomod).
 
-      The choice INSTALL_FLAVOR=fortran_mod will cause an addition of the Fortran
-    wrapper subroutines into the library "libnpy.a". Moreover, this option will
-    additionally install a module file "fnpy.mod" to the $(PREFIX)/include/ subdirectory.
-    This file is a binary, compiler-specific file that provides an exhaustive information
-    on the argument's types of the Fortran wrapper subroutines  "save_*". This choice
-    results in an early detection of argument-passing errors, because these errors would
-    be detected by the compiler at the compilaion time. However, the .mod file should
-    be generally produced by the same compiler which will be used in your application,
-    which often makes unusable the library if one tries to use different Fortran compilers
-    for the library and application. 
+      The choice INSTALL_FLAVOR=fortran_mod will cause an addition of the
+    Fortran wrapper subroutines into the library "libnpy.a". Moreover, this
+    option will additionally install a module file "fnpy.mod" to the
+    $(PREFIX)/include/ subdirectory. This file is a binary, compiler-specific
+    file that provides an exhaustive information on the argument's types of
+    the Fortran wrapper subroutines  "save_*". This choice results in an
+    early detection of argument-passing errors, because these errors would
+    be detected automatically at the compilation time. However, the .mod
+    file should be generally produced by the same compiler which will be
+    used in your application. The latter circumstance often makes unusable
+    the library if one tries to use different Fortran compilers for the
+    library and application. 
 
-      The choice INSTALL_FLAVOR=fortran_nomod will cause addition of yet other Fortran
-    wrapper subroutines (*npys) into the library "libnpy.a". However, this option would
-    not install any additional header-like file. This choice obvoiusly adds to the 
-    vulnerability of an application because the eventual argument-passing errors 
-    could not be detected at the compilation time. However, the _nomod wrappers do
-    not require the .mod file and do not contain any fortran-specific dependencies
-    to the "libnpy.a" (at least if compiled with gfortran without extra debug options).
-    This is a pre-requisite for a portable library, i.e. library that can be successfully
-    used with different Fortran compilers on the application side.
-
-CHANGELOG
-
-31/05/2009 Version 0.1
-
-12/10/2009 Version 0.2: Change sizeof(...) to (int) sizeof(...) in
-third argument of sprintf() to stop warnings from gcc-4.4.1.  Changed
-int shape[ndims] to int* shape to work around a problem with nvcc,
-the Nvidia cuda compiler (requested by Stéphane Gaudreault).
-
-12/10/2009 Version 0.3: Modified include/npy.h to add extern "C" when
-compiled with C++ (suggested by Stéphane Gaudreault).
-
-04/06/2010 Version 0.4: Added support for MAC OSX (patch provided
-by Vladimir Chalupecky).  Modified the makefile so that the Fortran
-bindings are optional.  The header file npy.h now provides a const
-string LIBNPY_VERSION giving the library version.
-
-18/03/2011 Version 0.5: Changed src/check_npy.py so that the for-loop
-is not executed when the file is imported as a module.  This change was
-in response to an email from Mark Rosin, who observed that
-'make check_fortran' fails if you do not first run 'make check'.
+      The choice INSTALL_FLAVOR=fortran_nomod will cause addition of yet
+    other Fortran wrapper subroutines (*npys) into the library "libnpy.a".
+    However, this option would not install any additional header-like file.
+    This choice obvoiusly adds to the vulnerability of the application because
+    the eventual argument-passing errors could not be detected at the
+    compilation time. However, the _nomod wrappers do not require any .mod
+    file and do not produce any fortran-specific dependencies in the 
+    "libnpy.a" (at least if compiled with gfortran without extra debug
+    options). This is a pre-requisite for a portable library, i.e. library
+    that can be successfully used with different Fortran compilers on the
+    application side.
 
 
