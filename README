@@ -17,6 +17,7 @@
     4.2. Provided functions / subroutines
     4.3. Discussion of pro- and contra- of provided INSTALL_FLAVOR options
 
+  5. CHANGELOG
 =======================
 
 1. INTRODUCTION
@@ -24,6 +25,10 @@
 This is a small library for writing an array to a .npy file, so that it
 can easily be loaded into a numpy application. The library can be called 
 from a C/C++ application. Moreover, Fortran wrappers are available. 
+
+If you are looking for a more sophisticated solution, have a look at 
+hdf file format (hierarchical data format) or netcdf library or 
+cnpy library.
 
 2. INSTALLATION
 
@@ -164,4 +169,29 @@ from a C/C++ application. Moreover, Fortran wrappers are available.
     that can be successfully used with different Fortran compilers on the
     application side.
 
+5. CHANGELOG
+
+31/05/2009 Version 0.1
+
+12/10/2009 Version 0.2: Change sizeof(...) to (int) sizeof(...) in
+third argument of sprintf() to stop warnings from gcc-4.4.1.  Changed
+int shape[ndims] to int* shape to work around a problem with nvcc,
+the Nvidia cuda compiler (requested by Stéphane Gaudreault).
+
+12/10/2009 Version 0.3: Modified include/npy.h to add extern "C" when
+compiled with C++ (suggested by Stéphane Gaudreault).
+
+04/06/2010 Version 0.4: Added support for MAC OSX (patch provided
+by Vladimir Chalupecky).  Modified the makefile so that the Fortran
+bindings are optional.  The header file npy.h now provides a const
+string LIBNPY_VERSION giving the library version.
+
+18/03/2011 Version 0.5: Changed src/check_npy.py so that the for-loop
+is not executed when the file is imported as a module.  This change was
+in response to an email from Mark Rosin, who observed that
+'make check_fortran' fails if you do not first run 'make check'.
+
+02/10/2014 Version 0.6: Substantial changes in the library:
+three INSTALLATION_FLAVORS, own implementation of htole16, reimplemented
+tests, etc. by Peter Koval.
 
