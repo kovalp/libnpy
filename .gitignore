@@ -1,1 +1,7 @@
-*.o *.mod *.a
+*.npy
+*.o
+*.mod
+*.a
+*.exe
+*~
+arch.inc
